@@ -1,0 +1,22 @@
+name: DEPLOY
+on:
+  push:
+    branches: [master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        env:
+          GIT_SSH_COMMAND: 'ssh -o StrictHostKeyChecking=no'
+        run: |
+          eval "$(ssh-agent -s)" && ssh-add -t 60 - <<< "${{secrets.DEPLOY}}"
+          git clone git@github.com:${{secrets.USERNAME}}/${{secrets.REPO_NAME}}.git .
+
+      - name: Login to Heroku Container
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Deploy to Heroku
+        run: heroku container:push web --app ${{secrets.HEROKU_APP_NAME}}
