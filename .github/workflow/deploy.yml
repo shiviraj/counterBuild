@@ -11,7 +11,7 @@ jobs:
           GIT_SSH_COMMAND: 'ssh -o StrictHostKeyChecking=no'
         run: |
           eval "$(ssh-agent -s)" && ssh-add -t 60 - <<< "${{secrets.DEPLOY}}"
-          git clone git@github.com:${{secrets.USERNAME}}/${{secrets.REPO_NAME}}.git .
+          git clone git@github.com:shiviraj/counterBuild.git .
 
       - name: Login to Heroku Container
         env:
